@@ -5,6 +5,10 @@
   "scripts": {
     "start": "node ./bin/www"
   },
+  "engines": {
+    "node": "8.12.0",
+    "npm": "6.4.1"
+  },
   "dependencies": {
     "cookie-parser": "~1.4.4",
     "date-utils": "^1.2.21",
