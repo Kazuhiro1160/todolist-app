@@ -1,0 +1,427 @@
+<div class="search-box bg-white py-3 px-4">
+    <div class="p-relative">
+        <div class="mb-2 h5">検索条件</div>
+        <form method="POST" action="" class="form-inline">
+            <div class="d-flex justify-content-start flex-wrap">
+                <div class="form-group mr-4">
+                    <label for="term" style="margin-right: 5px;">日付：</label>
+                    <ul class="list-style-none pl-0 mb-0">
+                        <li>
+                            <select name="term" id="term" class="form-control">
+                                <option id="term-all" value="all">全て</option>
+                                <option id="term-slct" value="slct">指定</option>
+                            </select>
+                        </li>
+                        <li id="term-date" class="mt-2" style="display: none;">
+                            <div class="d-flex">
+                                <input type="date" name="from_date" id="from_date" value="" class="form-control">
+                                <span class="px-1">~</span> 
+                                <input type="date" name="to_date" id="to_date" value="" class="form-control">
+                            </div>
+
+                        </li>
+                    </ul>
+                </div>
+                <div class="form-group mr-4">
+                    <label for="class" style="margin-right: 5px;">分類：</label>
+                    <select name="class" id="class" class="form-control">
+                        <option id="c-none" value="">-</option>
+                        <option id="business" value="仕事">仕事</option>
+                        <option id="private" value="プライベート">プライベート</option>
+                    </select>
+                </div>
+                <div class="form-group mr-4">
+                    <label for="priority" style="margin-right: 5px;">優先度：</label>
+                    <select name="priority" id="priority" class="form-control">
+                        <option id="p-none" value="">-</option>
+                        <option value="0" id="high">必須</option>
+                        <option value="1" id="high">高</option>
+                        <option value="2" id="low">低</option>
+                    </select>
+                </div>
+                <div class="form-group mr-4">
+                    <label for="status" style="margin-right: 5px;">ステータス：</label>
+                    <select name="status" id="status" class="form-control">
+                        <option id="s-none" value="">-</option>
+                        <option id="done" value="完了">完了</option>
+                        <option id="n-done" value="未完了">未完了</option>
+                    </select>
+                </div>
+                <div class="form-group mr-4">
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="narrow-due" name="narrow-target" value="due">
+                        <label class="custom-control-label" for="narrow-due">期日・締切時間あり</label>
+                    </div>
+                </div>
+            </div>
+            <input type="submit" value="検索" id="search-btn" class="btn btn-primary p-absolute p-rb-corner">                                            
+        </form>
+    </div>
+</div>
+<div class="pt-4">
+    <div class="mb-2 p-relative">
+        <div class="d-flex">
+            <p class="mb-0">選択リスト：<span id="checkbox-num" style="font-size: 1.125rem;">0</span>件</p>
+            <form method="post" action="/boards/status/<%= usrid %>" id="form1" style="margin-left: 0.75em;">
+                <input type="hidden" value="" name="lstids" id="lstids1">
+                <input type="submit" value="完了" class="bulk-change btn btn-success" id="bulk-done">
+            </form>
+            <form method="post" action="/boards/delete/<%= usrid %>" id="form2" style="margin-left: 0.75em;">
+                <input type="hidden" value="" name="lstids" id="lstids2">
+                <input type="submit" value="削除" class="bulk-change btn btn-danger" id="bulk-delete">
+            </form>
+            <div class="ml-auto form-inline">
+                <label for="lum" class="mb-0">表示件数：</label>
+                <select name="lnum" id="lnum" class="form-control">
+                    <option value="20">20</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="text-left pl-1">
+        <a id="slct-all">選択</a><span>/</span><a id="dl-all">解除</a>
+    </div>
+    <div class="card">
+        <table class="table table-striped table-sm">
+            <thead>
+                <tr>
+                    <th style="min-width: 15px;"></th>
+                    <th style="width: 10%;">日付</th>
+                    <th style="width:20%;">タイトル</th>
+                    <th style="width: 10%;">期日</th>
+                    <th style="width: 10%;">締切時間</th>
+                    <th style="width: 10%;">優先度</th>
+                    <th style="width: 10%;">分類</th>
+                    <th style="width: 10%;">ステータス</th>
+                    <th style="min-width: 75px;">アクション</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% for(var i in val){%>
+                    <% var unit = val[i];%>
+                    <tr style="background-color: #fff;">
+                        <td><input type="checkbox" name="list-checkbox" class="list-checkbox" value="<%= unit.id %>"></td>
+                        <td><%= unit.date %></td>
+                        <td><a href="/boards/detail/<%= unit.user_id %>/<%= unit.id %>"><%= unit.title %></a></td>
+                        <% if(unit.due_date == ''){%>
+                            <td>-</td>
+                        <%}else{%>
+                            <td><%= unit.due_date %></td>
+                        <%}%>
+                        <% if(unit.due_time == ''){%>
+                            <td>-</td>
+                        <%}else{%>
+                            <td><%= unit.due_time %></td>
+                        <%}%>
+                        <td><%= unit.priority %></td>
+                        <td><%= unit.class %></td>
+                        <% if(unit.status == '完了'){%>
+                            <td><span class="badge badge-success"><%= unit.status %></span></td>
+                        <%}else if(unit.status == '未完了'){%>
+                            <td><span class="badge badge-warning"><%= unit.status %></span></td>
+                        <%}%>
+                        <td id="td-action" class="table-action">
+                            <% if(unit.status == '未完了'){%>
+                                <a href="/boards/status/<%= unit.user_id %>/<%= unit.id %>/<%= unit.status %>" id="s-action" class="action-link" style="margin-right: 5px;"><i class="align-middle" data-feather="check-square"></i></a>
+                            <%}else if(unit.status == '完了'){%>
+                                <a href="/boards/status/<%= unit.user_id %>/<%= unit.id %>/<%= unit.status %>" id="s-action" class="action-link" style="margin-right: 5px;"><i class="align-middle" data-feather="corner-up-right"></i></a>
+                            <%}%>
+                            <a href="/boards/delete/<%= unit.user_id %>/<%= unit.id %>" id="d-action" class="action-link" style="margin-right: 5px;"><i class="align-middle" data-feather="trash"></i></a>
+                            <a href="/boards/edit/<%= unit.user_id %>/<%= unit.id %>" id ="e-action"><i class="align-middle" data-feather="edit-2"></i></a>
+                        </td>
+                    </tr>
+                <%}%>
+            </tbody>
+        </table>
+        <%- msg %>
+    </div>
+    <div class="">
+        <ul class="pagination justify-content-center">
+            <li class="page-item">
+                <% if (page <= 0) {%>
+                    <a href="/boards/lists/<%= usrid %>/0/" class="page-link">&lt;&lt; prev</a>
+                <%}else{%>
+                    <a href="/boards/lists/<%= usrid %>/<%= page -1 %>/" class="page-link">&lt;&lt; prev</a>
+                <%}%>
+            </li>
+            <li class="page-item">
+                <a href="/boards/lists/<%= usrid %>/<%= page +1 %>/" class="page-link">next &gt;&gt;</a>
+            </li>
+        </ul>
+    </div>
+</div>
+<input type="hidden" name="query" value="<%= query %>">
+
+<script>
+    $(function(){
+        // 現在のurlのクエリ部分取得
+        const query_url = location.search;
+
+        // 優先度が必須のリストのbackground-color/opacity変更
+        const elem_tr = $('tr');
+        for(var i = 0; i < elem_tr.length; i++){
+            var elem_prio = elem_tr[i].children[5];
+            var elem_stts = elem_tr[i].children[7];
+            if(elem_prio.innerHTML == '必須'){
+                elem_tr[i].setAttribute('class', 'designated');
+                elem_tr[i].style.backgroundColor = '#FFAD90';
+            }
+            if(elem_stts.children.innerHTML == '完了'){
+                elem_tr[i].style.opacity = 0.7;
+            }
+        }
+        $('.designated').children().css('color', '#fff');
+        $('.designated').find('a').addClass('link-white');
+
+
+        // ロード時に検索formの各項目の状態を保持
+        const key_array = ['from','to','class','priority', 'status', 'due', 'lnum'];
+        const query = $('input[name="query"]').val();
+        console.log(query);
+        const query_obj = JSON.parse(query);
+        const q_obj_keys = Object.keys(query_obj);
+        const q_obj_values = Object.values(query_obj);
+        console.log(query_obj);
+        if(q_obj_keys.length > 0){
+            for(var i = 0;i < q_obj_keys.length; i++){
+                var query_val = q_obj_values[i];
+                if(query_val){
+                    if(q_obj_keys[i] == 'from'){
+                        $('#term-slct').prop('selected', true);
+                        $('input[name="from_date"]').prop('value', query_val);
+                    }else if(q_obj_keys[i] == 'to'){
+                        $('#term-slct').prop('selected', true);
+                        $('input[name="to_date"]').prop('value', query_val);
+                    }else if(q_obj_keys[i] == 'due'){
+                        $('input[name="narrow-target"]').prop('checked', true);
+                    }else{
+                        var elem_name = q_obj_keys[i];
+                        var opts = $(`select[name=${elem_name}] option`);
+                        for(var n = 0; n < opts.length; n++){
+                            if(opts[n].value == query_val){
+                                opts[n].selected = true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+       
+        
+        // リストページの検索ボタン押下時、formのactionルーティング取得
+        const route_first = "/boards/lists/<%= user_id %>/0/"
+        const q_fm = "from=";
+        const q_to = "to=";
+        const q_cls = "class=";
+        const q_prio = "priority=";
+        const q_status = "status=";
+        const q_time = "due=";
+        const q_lnum = "lnum="
+        var q1 = "";
+        var q2 = "";
+        var q3 = "";
+        var q4 = "";
+        var q5 = "";
+        var q6 = "";
+        var q7 ="";
+
+        var var_array = [q1,q2,q3,q4,q5,q6,q7];
+        for(var i = 0;i < var_array.length; i++){
+            if(query_obj[key_array[i]] === undefined || query_obj[key_array[i]] === 'undefined'){
+                var_array[i] = "";
+            }else{
+                var_array[i] = key_array[i] + '=' + query_obj[key_array[i]];
+            }
+        }        
+        // 期間の選択に応じた要素の表示・非表示
+        if($('select[name="term"] option:selected').val() == 'slct'){
+            console.log('display block');
+            $('#term-date').css('display', 'block');
+        }
+        const $term_select = $('select[name="term"]');
+
+        $(document).on('change', $term_select, function() {
+            const $term_opt = $('select[name="term"] option:selected');
+            console.log($term_opt.val());
+            if($term_opt.val() == 'slct'){
+                $('#term-date').css('display', 'block');
+                console.log($('input[name="from_date"]').val())
+                console.log($('input[name="to_date"]').val());
+            }else if($term_opt.val() == 'all'){
+                $('input[name="from_date"]').prop('value', '');
+                console.log($('input[name="from_date"]').val());
+                $('input[name="to_date"]').prop('value', '');
+                console.log($('input[name="to_date"]').val());
+                $('#term-date').css('display', 'none');
+                var_array[0] = "";
+                var_array[1] = "";
+            }
+        });
+
+        $(document).on('change', 'input[name="from_date"]', function() {
+            var val = $('input[name="from_date"]').val();
+            if(val != ""){
+                q1 = q_fm + val;
+            }else{
+                q1 = "";
+            }
+            var_array[0] = q1;
+        });
+        
+        
+        $(document).on('change', 'input[name="to_date"]', function() {
+            var val = $('input[name="to_date"]').val();
+            if(val != ""){
+                q2 = q_to + val;
+            }else{
+                q2 = "";
+            }
+            var_array[1] = q2;
+        });
+        
+        $(document).on('change', 'select[name="class"]', function() {
+            var val = $('select[name="class"] option:selected').val();
+            if(val != ""){
+                q3 = q_cls + val;
+            }else{
+                q3 = "";
+            }
+            var_array[2] = q3; 
+        });
+
+        $(document).on('change', 'select[name="priority"]', function() {
+            var val = $('select[name="priority"] option:selected').val();
+            if(val != ""){
+                q4 = q_prio + val;
+            }else{
+                q4 = "";
+            }
+            var_array[3] = q4;
+        });
+        $(document).on('change', 'select[name="status"]', function() {
+            var val = $('select[name="status"] option:selected').val();
+            if(val != ""){
+                q5 = q_status + val;
+            }else{
+                q5 = "";
+            }
+            var_array[4] = q5;
+        });
+        $(document).on('change', 'input[id="narrow-due"]', function() {
+            var $elem = $('input[id="narrow-due"]');
+            if($elem.prop('checked')){
+                q6 = q_time + 'true';
+            }else{
+                q6 ="";
+            }
+            var_array[5] = q6; 
+        });
+        $(document).on('change', 'select[name="lnum"]', function() {
+            var val = $('select[name="lnum"] option:selected').val();
+            q7 = q_lnum + val;
+            var_array[6] = q7;
+        });
+
+        $('#search-btn').click(function(){
+            var q_final = "";
+            for(var i = 0; i < var_array.length; i++){
+                    if(var_array[i] != ""){
+                        if(q_final == ""){
+                        q_final += '?' + var_array[i];
+                    }else{
+                        q_final += '&' + var_array[i];
+                    }
+                }
+                
+            }
+            var route = route_first + q_final;
+            $('form').prop('action', route);
+        });
+
+        // ページネーションクリック時のhref変更
+        $('.pagination a').click(function(){
+            const href_init = $(this).prop('href'); 
+            const href = href_init + query_url; 
+            $(this).prop('href', href);
+        });
+
+    
+        // 削除アイコンクリック時
+        $('.action-link').click(function(){
+            const $parent_tds = $(this).parent().parent().find('td');
+            const d = $parent_tds.eq(1).text();
+            const ttl = $parent_tds.eq(2).text();
+            const dt = $parent_tds.eq(1).text();
+            const dtm = $parent_tds.eq(4).text();
+            const prio = $parent_tds.eq(5).text();
+            const cls = $parent_tds.eq(6).text();
+            const stts = $parent_tds.eq(7).text();
+            const elem_txts = [d,ttl,dt,dtm,prio,cls,stts];
+            const column_nms = ['日付','タイトル','期日','締切時間','優先度','分類','ステータス'];
+            var msg1 ='';
+            var msg2 = '';
+            for(var i = 0; i < column_nms.length;i++){
+                msg1 += '[' + column_nms[i] + '] ' + elem_txts[i] + '\n';
+            }
+            if($(this).prop('id') == 's-action'){
+                msg2 = 'のステータスを変更しますか？'
+            }else if($(this).prop('id') == 'd-action'){
+                msg2 = 'を削除しますか？'
+            }
+
+            if(confirm(msg1 + msg2)){
+
+            }else{
+                return false;
+            }
+        });
+
+        // 複数チェックボックスの削除
+        $('#bulk-delete').click(function(){
+            if(confirm('本当に削除しますか？')){
+                const $boxes = $('input[name="list-checkbox"]:checked');
+                var ids = '';
+                if($boxes.length > 0){
+                    for(var i = 0; i < $boxes.length; i++){
+                    ids += $boxes[i].value + ',';
+                    }
+                    ids = ids.slice(0, -1);
+                }
+                $('#lstids2').prop('value', ids);
+            }else{
+                return false;
+            }
+        });
+
+        // 複数チェックボックスの完了
+        $('#bulk-done').click(function(){
+            if(confirm('選択されたリストを完了にしますか？')){
+                const $boxes = $('input[name="list-checkbox"]:checked');
+                var ids = '';
+                if($boxes.length > 0){
+                    for(var i = 0; i < $boxes.length; i++){
+                    ids += $boxes[i].value + ',';
+                    }
+                    ids = ids.slice(0, -1);
+                }
+                $('#lstids1').prop('value', ids);
+            }else{
+                return false;
+            }
+            
+        });
+
+        // チェックボックスの全選択・全解除
+        $('#slct-all').click(function(){
+            const $boxes = $('input[name="list-checkbox"]');
+            $boxes.prop('checked', true);
+        });
+        $('#dl-all').click(function(){
+            const $boxes = $('input[name="list-checkbox"]');
+            $boxes.prop('checked', false);
+        });
+
+    });
+</script>

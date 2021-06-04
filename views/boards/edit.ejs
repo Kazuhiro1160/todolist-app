@@ -1,0 +1,103 @@
+<h1 class="h3 mb-3">
+    <%= title %>
+</h1>
+<div class="card">
+    <div class="card-body ">
+        <p><%- valid %></p>
+        <div class="list-info text-right">
+            <ul class="d-inline-block mb-0 list-style-none text-muted text-left">
+                <li>作成者：<%= val.name %></li>
+                <li>作成日：<%= val.created_at %></li>
+                <li>更新日：<%= val.updated_at %></li>
+            </ul>
+        </div>
+        <form method="POST" action="/boards/edit/<%= val.usrid %>/<%= val.lstid %>">
+            <div class="form-group">
+                <label for="title">タイトル：</label>
+                <input type="text" name="title" id="title" value="<%= val.title%>" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="date">日付：</label>
+                <input type="date" name="date" id="date" value="<%= val.date %>" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="due_date">期日：</label>
+                <input type="date" name="due_date" id="due_date" value="<%= val.due_date %>" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="due_time">締切時間：</label>
+                <input type="time" name="due_time" id="due_time" value="<%= val.due_time%>" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="class">分類：</label>
+                <select name="class" id="class" class="form-control">
+                    <option value="仕事" id="business">仕事</option>
+                    <option value="プライベート" id="private">プライベート</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="priority">優先度：</label>
+                <select name="priority" id="priority" class="form-control">
+                    <option value="3" id="p-none">なし</option>
+                    <option value="0" id="must">必須</option>
+                    <option value="1" id="high">高</option>
+                    <option value="2" id="low">低</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="repeat">繰り返し：</label>
+                <select name="repeat" id="repeat" class="form-control">
+                    <option value="0" id="r-none">なし</option>
+                    <option value="1" id="every-d">毎日</option>
+                    <option value="2" id="every-w">毎週</option>
+                    <option value="3" id="every-m">毎月</option>
+                    <option value="4" id="weekdays">平日</option>
+                    <option value="5" id="off-days">土日祝</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="memo">メモ：</label>
+                <textarea class="form-control" name="memo" id="memo" cols="30" rows="10" style="white-space:pre-wrap;"><%= val.memo %></textarea>
+            </div>
+            <input type="hidden" value="<%= val.class %>" id="cls-val">
+            <input type="hidden" value="<%= val.priority %>" id="prio-val">
+            <input type="hidden" value="<%= val.repeat %>" id="rpt-val">
+            <div class="text-center">
+                <div class="d-inline-block">
+                    <input type="submit" id="edit-btn" value="変更" class="btn btn-primary mr-3">
+                    <a href="/boards/delete/<%= user_id %>/<%= val.lstid %>" id="d-btn" class="btn btn-danger">削除<a>
+                </div>                
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    const ref = document.referrer;
+    const id_array = ['cls-val','prio-val','rpt-val'];
+    const op_array = [{'仕事':'business',
+                        'プライベート':'private'},
+                        {'0':'must',
+                        '1':'high',
+                        '2':'low',
+                        '3':'p-none'},
+                        {'0':'r-none',
+                        '1':'every-d',
+                        '2':'every-w',
+                        '3':'every-m',
+                        '4':'weekdays',
+                        '5':'off-days'}
+                ];
+    addSelected(id_array,op_array);
+
+    // 削除ボタン押下時の確認ポップアップ表示
+    $('#d-btn').click(function(){
+        if(confirm('このリストを削除しますか？')){
+
+        }else{
+            return false;
+        }
+    });
+    
+
+</script>
