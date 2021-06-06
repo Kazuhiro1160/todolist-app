@@ -29,6 +29,10 @@ var session_opt = {
   saveUninitialized: false,
   cookie: {maxAge: 180 * 60 * 1000}
 };
+if (app.get('env') === 'production') {
+  app.set('trust proxy', 1) // trust first proxy
+  sess.cookie.secure = true // serve secure cookies
+}
 app.use(session(session_opt));
 
 app.use('/', indexRouter);
