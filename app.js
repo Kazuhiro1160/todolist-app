@@ -31,7 +31,7 @@ var session_opt = {
 };
 if (app.get('env') === 'production') {
   app.set('trust proxy', 1) // trust first proxy
-  sess.cookie.secure = true // serve secure cookies
+  session_opt.cookie.secure = true // serve secure cookies
 }
 app.use(session(session_opt));
 
