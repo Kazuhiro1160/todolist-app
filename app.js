@@ -8,6 +8,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var boards = require('./routes/boards');
 const session = require('express-session');
+require('pg').defaults.ssl = true;
 
 var app = express();
 
@@ -30,8 +31,8 @@ var session_opt = {
   cookie: {maxAge: 180 * 60 * 1000}
 };
 if (app.get('env') === 'production') {
-  app.set('trust proxy', 1) // trust first proxy
-  session_opt.cookie.secure = true // serve secure cookies
+  app.set('trust proxy', 1); // trust first proxy
+  session_opt.cookie.secure = true; // serve secure cookies
 }
 app.use(session(session_opt));
 
