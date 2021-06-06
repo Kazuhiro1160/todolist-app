@@ -1,9 +1,15 @@
 var express = require('express');
 var router = express.Router();
-
-const sqlite3 = require('sqlite3');
-
-const db = new sqlite3.Database('todo_lists.sqlite3');
+var { Client } = require('pg');
+var client = new Client({
+    user: 'postgres',
+    host: 'localhost',
+    database: 'todoappdb',
+    password: 'mkazu1160',
+    port: 5432
+});
+ 
+client.connect();
 const {check, validationResult } = require('express-validator');
 
 /* GET users listing. */
@@ -73,12 +79,13 @@ router.post('/signin', [
   }else{
     const nm = req.body.name;
     const ps = req.body.password;
-    db.serialize(()=>{
-      const q = "select * from User where name = ? and password = ?";
-      db.get(q, [nm, ps], (err, row)=>{
-        console.log(row);
-        if(row != undefined){
-          req.session.login = row;
+      const q = {
+        text: 'select * from users where name = $1 and password = $2',
+        values: [nm, ps],
+      };
+      client.query(q, (err, res1) => {
+        if(res1.rows[0] != undefined){
+          req.session.login = res1.rows[0];
           let back = req.session.back;
           if(back == null){
             back = '/boards/home';
@@ -98,7 +105,6 @@ router.post('/signin', [
           res.render('users/sign', data);
         }
       });
-    });
   }
   
 });
@@ -139,13 +145,24 @@ router.post('/signup', [
   }else{
     const nm = req.body.name;
     const ps = req.body.password;
-    db.serialize(()=>{
-      const q1 = "select count(*) as count from User where name = ? and password = ?";
-      const q2 = "insert into User(name, password) values(?,?)";
-      db.get(q1, [nm, ps], (err, row)=>{
+      const q1 = {
+        text: "select count(*) as count from users where name = $1 and password = $2",
+        values: [nm, ps]
+      };
+      const q2 = {
+        text: "insert into users(name, password) values($1,$2)",
+        values: [nm, ps]
+      };
+      client.query(q1, (err, res1) => {
         if(!err){
-          if(row.count == 0){
-            db.run(q2, nm, ps);
+          if(res1.rows[0].count == 0){
+            client.query(q2, (err, res2) => {
+              if (err) {
+                  console.log(err.stack)
+              } else {
+                  console.log(res2.rows[0])
+              }
+            });
             res.redirect('/users/signin');
           }else{
             var data ={
@@ -161,7 +178,6 @@ router.post('/signup', [
           }
         }
       })
-    });
   }
   
 });

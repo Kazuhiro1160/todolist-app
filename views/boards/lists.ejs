@@ -105,12 +105,12 @@
                         <td><input type="checkbox" name="list-checkbox" class="list-checkbox" value="<%= unit.id %>"></td>
                         <td><%= unit.date %></td>
                         <td><a href="/boards/detail/<%= unit.user_id %>/<%= unit.id %>"><%= unit.title %></a></td>
-                        <% if(unit.due_date == ''){%>
+                        <% if(unit.due_date == null){%>
                             <td>-</td>
                         <%}else{%>
                             <td><%= unit.due_date %></td>
                         <%}%>
-                        <% if(unit.due_time == ''){%>
+                        <% if(unit.due_time == null){%>
                             <td>-</td>
                         <%}else{%>
                             <td><%= unit.due_time %></td>
