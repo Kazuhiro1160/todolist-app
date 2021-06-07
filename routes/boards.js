@@ -8,11 +8,13 @@ const now = new Date();
 const cron = require('node-cron');
 var { Client } = require('pg');
 var client = new Client({
-    user: 'crdelgaerwibgg',
-    host: 'ec2-184-73-198-174.compute-1.amazonaws.com',
-    database: 'd4e10q2ggqa1jr',
-    password: 'fb7b8bdaff4285e9000264319d58a52e988217bf2de1139c5237d1ff02f200e3',
-    port: 5432
+    // user: 'crdelgaerwibgg',
+    // host: 'ec2-184-73-198-174.compute-1.amazonaws.com',
+    // database: 'd4e10q2ggqa1jr',
+    // password: 'fb7b8bdaff4285e9000264319d58a52e988217bf2de1139c5237d1ff02f200e3',
+    // port: 5432
+    connectionString: process.env.DATABASE_URL,
+    ssl: { rejectUnauthorized: false }
 });
  
 client.connect();

@@ -8,7 +8,6 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var boards = require('./routes/boards');
 const session = require('express-session');
-require('pg').defaults.ssl = true;
 
 var app = express();
 
