@@ -23,17 +23,17 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-var session_opt = {
-  secret: 'keyboard cat',
-  resave: false,
-  saveUninitialized: false,
-  cookie: {maxAge: 180 * 60 * 1000}
-};
-if (app.get('env') === 'production') {
-  app.set('trust proxy', 1); // trust first proxy
-  session_opt.cookie.secure = true; // serve secure cookies
-}
-app.use(session(session_opt));
+// var session_opt = {
+//   secret: 'keyboard cat',
+//   resave: false,
+//   saveUninitialized: false,
+//   cookie: {maxAge: 180 * 60 * 1000}
+// };
+// if (app.get('env') === 'production') {
+//   app.set('trust proxy', 1); // trust first proxy
+//   session_opt.cookie.secure = true; // serve secure cookies
+// }
+// app.use(session(session_opt));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
