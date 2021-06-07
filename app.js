@@ -7,7 +7,9 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var boards = require('./routes/boards');
+const redis = require('redis')
 const session = require('express-session');
+const RedisStore = require("connect-redis")(session);
 
 var app = express();
 
@@ -23,17 +25,19 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// var session_opt = {
-//   secret: 'keyboard cat',
-//   resave: false,
-//   saveUninitialized: false,
-//   cookie: {maxAge: 180 * 60 * 1000}
-// };
-// if (app.get('env') === 'production') {
-//   app.set('trust proxy', 1); // trust first proxy
-//   session_opt.cookie.secure = true; // serve secure cookies
-// }
-// app.use(session(session_opt));
+var session_opt = {
+  store: new RedisStore({
+      url: process.env.REDIS_URL,
+      client: redis.createClient({
+          url: process.env.REDIS_URL
+      }),
+      ttl: 60 * 60
+  }),
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: false,
+};
+app.use(session(session_opt));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
