@@ -390,7 +390,7 @@ router.post('/add/:usrid/:option', [
         res.render('boards/index', data);
 
     }else{
-        const ndt = m.format('YYYY-MM-DD HH24:mm:ss');
+        const ndt = m.format('YYYY-MM-DD HH:mm:ss');
         var values = [];
         const val_array = [usrid, ttl, d, dd, dt, memo, cls, prio, rpt, ndt];
         for(var i in val_array){
@@ -696,7 +696,7 @@ router.post('/edit/:usrid/:lstid',  [
         res.render('boards/index', data);
 
     }else{
-        const ndt = m.format('YYYY-MM-DD HH24:mm:ss');
+        const ndt = m.format('YYYY-MM-DD HH:mm:ss');
         var values = [];
         const val_array = [usrid, ttl, d, dd, dt, memo, cls, prio, rpt, ndt, lstid];
         for(var i in val_array){
