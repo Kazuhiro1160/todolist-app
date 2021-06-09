@@ -436,7 +436,7 @@ router.get('/detail/:usrid/:lstid', function(req, res, next) {
             };
             client.query(q, (err, res1) => {
                 if(!err){
-                    dataForShow(res1.rows[0]);
+                    dataForShow(res1.rows);
                     var data = {
                         login: req.session.login,
                         lnum: req.session.lnum,
