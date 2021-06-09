@@ -32,7 +32,7 @@
                     <%var key_array = ['due_date', 'due_time', 'class', 'priority', 'status', 'repeat']; %>
                     <%var key_jan_array = ['〆', '〆', '', '優先度 ', '', '']; %>
                     <% for(var i in key_array){%>
-                        <%if(val[key_array[i]] != ""){%>
+                        <%if(val[key_array[i]] != null){%>
                             <li class="m-0"><span class="badge badge-pill badge-primary"><%= key_jan_array[i] %><%= val[key_array[i]] %></span></li>
                         <%}%>
                     <%}%>                

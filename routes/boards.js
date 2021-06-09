@@ -431,7 +431,7 @@ router.get('/detail/:usrid/:lstid', function(req, res, next) {
     const ssnpth = req.session.path;
     if(ssnid == usrid){
             const q = { 
-                text: "select * from lists where id = $1",
+                text: "select id, user_id, title, to_char(date, 'YYYY-MM-DD') as date, to_char(due_date, 'YYYY-MM-DD') as due_date, to_char(due_time, 'HH24:MI') as due_time, memo, priority, status, repeat, to_char(created_at, 'YYYY-MM-DD HH24:MI:SS') as created_at, to_char(updated_at, 'YYYY-MM-DD HH24:MI:SS') as updated_at from lists where id = $1",
                 values: [lstid]
             };
             client.query(q, (err, res1) => {
