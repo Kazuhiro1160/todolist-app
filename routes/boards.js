@@ -436,14 +436,14 @@ router.get('/detail/:usrid/:lstid', function(req, res, next) {
             };
             client.query(q, (err, res1) => {
                 if(!err){
-                    dataForShow(res1.rows);
+                    dataForShow(res1.rows[0]);
                     var data = {
                         login: req.session.login,
                         lnum: req.session.lnum,
                         user_id: usrid,
                         title: 'リスト詳細ページ',
                         app_name: app_name,
-                        content: res1.rows, 
+                        content: res1.rows[0], 
                         filename: 'detail'
                     };
                   res.render('boards/index', data);
