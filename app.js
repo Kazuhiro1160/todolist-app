@@ -36,7 +36,7 @@ var session_opt = {
       client: redis.createClient({
           url: process.env.REDIS_URL
       }),
-      ttl: 60 * 60
+      ttl: 60 * 60 * 8
   }),
   secret: 'keyboard cat',
   resave: false,
